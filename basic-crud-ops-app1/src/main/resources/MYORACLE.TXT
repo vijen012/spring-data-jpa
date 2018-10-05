@@ -1,0 +1,86 @@
+CREATE table "ORGANIZATION" (
+    "ID"                    NUMBER,
+    "COMPANY_NAME"          VARCHAR2(20),
+    "YEAR_OF_INCORPORATION" NUMBER,
+    "POSTAL_CODE"           VARCHAR2(10),
+    "EMPLOYEE_COUNT"        NUMBER,
+    "SLOGAN"                NVARCHAR2(50),
+    constraint  "ORGANIZATION_PK" primary key ("ID")
+)
+/
+
+CREATE sequence "ORGANIZATION_SEQ" 
+/
+
+CREATE trigger "BI_ORGANIZATION"  
+  before insert on "ORGANIZATION"              
+  for each row 
+begin  
+  if :NEW."ID" is null then
+    select "ORGANIZATION_SEQ".nextval into :NEW."ID" from dual;
+  end if;
+end;
+/   
+
+---------------------------------------------------------------------------------------
+
+CREATE TABLE  "COURSE" 
+   (    "ID" VARCHAR2(20), 
+    "NAME" VARCHAR2(30), 
+    "DESCRIPTION" VARCHAR2(50), 
+     CONSTRAINT "COURSE_PK" PRIMARY KEY ("ID") ENABLE
+   ) ;
+
+---------------------------------------------------------------------------------------
+
+   CREATE TABLE  "TOPIC" 
+   (    "ID" VARCHAR2(20), 
+    "NAME" VARCHAR2(30), 
+    "DESCRIPTION" VARCHAR2(50), 
+    "COURSE" VARCHAR2(20 CHAR), 
+     CONSTRAINT "TOPIC_PK" PRIMARY KEY ("ID") ENABLE
+   ) ;ALTER TABLE  "TOPIC" ADD CONSTRAINT "FKOCEQMKKINIB72S2X7BHWXF9G9" FOREIGN KEY ("COURSE")
+      REFERENCES  "COURSE" ("ID") ENABLE;
+
+-----------------------------------------------------------------------------------------
+
+CREATE TABLE  "PRODUCT" 
+   (    "ID" NUMBER(*,0) NOT NULL ENABLE, 
+    "NAME" VARCHAR2(20), 
+    "DESCRIPTION" VARCHAR2(100), 
+    "PRICE" NUMBER(8,3), 
+     CONSTRAINT "PRODUCT_PK" PRIMARY KEY ("ID") ENABLE
+   ) ;
+
+---------------------------------------------------------------------------------------
+
+   CREATE TABLE  "CUSTOMER" 
+   (    "ID" NUMBER(*,0) NOT NULL ENABLE, 
+    "NAME" VARCHAR2(20), 
+    "EMAIL" VARCHAR2(30), 
+     CONSTRAINT "CUSTOMER_PK" PRIMARY KEY ("ID") ENABLE
+   ) ;
+
+---------------------------------------------------------------------------------------
+CREATE table "EMPLOYEES" (
+    "ID"         NUMBER,
+    "NAME"       VARCHAR2(20),
+    constraint  "EMPLOYEES_PK" primary key ("ID")
+)
+/
+
+CREATE sequence "EMPLOYEES_SEQ" 
+/
+
+CREATE trigger "BI_EMPLOYEES"  
+  before insert on "EMPLOYEES"              
+  for each row 
+begin  
+  if :NEW."ID" is null then
+    select "EMPLOYEES_SEQ".nextval into :NEW."ID" from dual;
+  end if;
+end;
+/   
+
+
+---------------------------------------------------------------------------------------

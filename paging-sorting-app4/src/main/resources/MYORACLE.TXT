@@ -1,0 +1,100 @@
+CREATE table "ORGANIZATION" (
+    "ID"                    NUMBER,
+    "COMPANY_NAME"          VARCHAR2(20),
+    "YEAR_OF_INCORPORATION" NUMBER,
+    "POSTAL_CODE"           VARCHAR2(10),
+    "EMPLOYEE_COUNT"        NUMBER,
+    "SLOGAN"                NVARCHAR2(50),
+    constraint  "ORGANIZATION_PK" primary key ("ID")
+)
+/
+
+CREATE sequence "ORGANIZATION_SEQ" 
+/
+
+CREATE trigger "BI_ORGANIZATION"  
+  before insert on "ORGANIZATION"              
+  for each row 
+begin  
+  if :NEW."ID" is null then
+    select "ORGANIZATION_SEQ".nextval into :NEW."ID" from dual;
+  end if;
+end;
+/   
+
+---------------------------------------------------------------------------------------
+
+CREATE TABLE  "COURSE" 
+   (    "ID" VARCHAR2(20), 
+    "NAME" VARCHAR2(30), 
+    "DESCRIPTION" VARCHAR2(50), 
+     CONSTRAINT "COURSE_PK" PRIMARY KEY ("ID") ENABLE
+   ) ;
+
+---------------------------------------------------------------------------------------
+
+   CREATE TABLE  "TOPIC" 
+   (    "ID" VARCHAR2(20), 
+    "NAME" VARCHAR2(30), 
+    "DESCRIPTION" VARCHAR2(50), 
+    "COURSE" VARCHAR2(20 CHAR), 
+     CONSTRAINT "TOPIC_PK" PRIMARY KEY ("ID") ENABLE
+   ) ;ALTER TABLE  "TOPIC" ADD CONSTRAINT "FKOCEQMKKINIB72S2X7BHWXF9G9" FOREIGN KEY ("COURSE")
+      REFERENCES  "COURSE" ("ID") ENABLE;
+
+-----------------------------------------------------------------------------------------
+
+CREATE TABLE  "PRODUCT" 
+   (    "ID" NUMBER(*,0) NOT NULL ENABLE, 
+    "NAME" VARCHAR2(20), 
+    "DESCRIPTION" VARCHAR2(100), 
+    "PRICE" NUMBER(8,3), 
+     CONSTRAINT "PRODUCT_PK" PRIMARY KEY ("ID") ENABLE
+   ) ;
+
+Insert into PRODUCT (ID,NAME,DESCRIPTION,PRICE) values (2,'Galaxy 9','From Samsung Inc',1000);
+Insert into PRODUCT (ID,NAME,DESCRIPTION,PRICE) values (3,'TV','From Sony Inc',700);
+Insert into PRODUCT (ID,NAME,DESCRIPTION,PRICE) values (4,'Iron','From LG Inc',70);
+Insert into PRODUCT (ID,NAME,DESCRIPTION,PRICE) values (5,'HeadPhone','From Bose Inc',300);
+Insert into PRODUCT (ID,NAME,DESCRIPTION,PRICE) values (6,'HeadPhone','From Beats Inc',295);
+Insert into PRODUCT (ID,NAME,DESCRIPTION,PRICE) values (1,'MacBook Pro','From Apple Inc',1000);
+Insert into PRODUCT (ID,NAME,DESCRIPTION,PRICE) values (7,'Hair Dryer','From LG Inc',400);
+
+---------------------------------------------------------------------------------------
+
+   CREATE TABLE  "CUSTOMER" 
+   (    "ID" NUMBER(*,0) NOT NULL ENABLE, 
+    "NAME" VARCHAR2(20), 
+    "EMAIL" VARCHAR2(30), 
+     CONSTRAINT "CUSTOMER_PK" PRIMARY KEY ("ID") ENABLE
+   ) ;
+   
+Insert into CUSTOMER (ID,NAME,EMAIL) values (1,'Rahul Jain','rahul.jain@gmail.com');
+Insert into CUSTOMER (ID,NAME,EMAIL) values (2,'John Willson','john.willson@gmail.com');
+Insert into CUSTOMER (ID,NAME,EMAIL) values (3,'Mayank Gupta','mayank.gupta@gmail.com');
+Insert into CUSTOMER (ID,NAME,EMAIL) values (4,'Rahul Gupta','rahul.gupta@gmail.com');
+   
+
+---------------------------------------------------------------------------------------
+CREATE table "EMPLOYEES" (
+    "ID"         NUMBER,
+    "NAME"       VARCHAR2(20),
+    constraint  "EMPLOYEES_PK" primary key ("ID")
+)
+/
+
+CREATE sequence "EMPLOYEES_SEQ" 
+/
+
+CREATE trigger "BI_EMPLOYEES"  
+  before insert on "EMPLOYEES"              
+  for each row 
+begin  
+  if :NEW."ID" is null then
+    select "EMPLOYEES_SEQ".nextval into :NEW."ID" from dual;
+  end if;
+end;
+/   
+
+
+---------------------------------------------------------------------------------------

@@ -1,0 +1,61 @@
+CREATE table "PROGRAMMER" (
+    "ID"         NUMBER,
+    "NAME"       VARCHAR2(20),
+    "SALARY"     NUMBER,
+    constraint  "PROGRAMMER_PK" primary key ("ID")
+)
+/
+
+CREATE sequence "PROGRAMMER_SEQ" 
+/
+
+CREATE trigger "BI_PROGRAMMER"  
+  before insert on "PROGRAMMER"              
+  for each row 
+begin  
+  if :NEW."ID" is null then
+    select "PROGRAMMER_SEQ".nextval into :NEW."ID" from dual;
+  end if;
+end;
+/   
+
+
+CREATE table "PROJECT" (
+    "ID"         NUMBER,
+    "NAME"       VARCHAR2(20),
+    constraint  "PROJECT_PK" primary key ("ID")
+)
+/
+
+CREATE sequence "PROJECT_SEQ" 
+/
+
+CREATE trigger "BI_PROJECT"  
+  before insert on "PROJECT"              
+  for each row 
+begin  
+  if :NEW."ID" is null then
+    select "PROJECT_SEQ".nextval into :NEW."ID" from dual;
+  end if;
+end;
+/   
+
+
+
+CREATE table "PROGRAMMERS_PROJECTS" (
+    "PROGRAMMER_ID" NUMBER,
+    "PROJECT_ID"    NUMBER
+)
+/
+
+ALTER TABLE "PROGRAMMERS_PROJECTS" ADD CONSTRAINT "PROGRAMMERS_PROJECTS_FK" 
+FOREIGN KEY ("PROGRAMMER_ID")
+REFERENCES "PROGRAMMER" ("ID")
+
+/
+ALTER TABLE "PROGRAMMERS_PROJECTS" ADD CONSTRAINT "PROGRAMMERS_PROJECTS_FK2" 
+FOREIGN KEY ("PROJECT_ID")
+REFERENCES "PROJECT" ("ID")
+
+/
+

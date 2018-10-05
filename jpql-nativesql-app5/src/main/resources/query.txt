@@ -1,0 +1,31 @@
+CREATE table "STUDNET_1" (
+    "ID"         NUMBER,
+    "FNAME"      VARCHAR2(20),
+    "LNAME"      VARCHAR2(20),
+    "SCORE"      NUMBER,
+    constraint  "STUDNET_1_PK" primary key ("ID")
+)
+/
+
+CREATE sequence "STUDNET_1_SEQ" 
+/
+
+CREATE trigger "BI_STUDNET_1"  
+  before insert on "STUDNET_1"              
+  for each row 
+begin  
+  if :NEW."ID" is null then
+    select "STUDNET_1_SEQ".nextval into :NEW."ID" from dual;
+  end if;
+end;
+/   
+
+
+Insert into STUDENT_1 (ID,FNAME,LNAME,SCORE) values (1,'Rahul','Jain',78);
+Insert into STUDENT_1 (ID,FNAME,LNAME,SCORE) values (3,'John','Jackson',88);
+Insert into STUDENT_1 (ID,FNAME,LNAME,SCORE) values (4,'Rohit','Gupta',78);
+Insert into STUDENT_1 (ID,FNAME,LNAME,SCORE) values (5,'Varun','Kumar',98);
+Insert into STUDENT_1 (ID,FNAME,LNAME,SCORE) values (6,'Tarun','Gupta',88);
+Insert into STUDENT_1 (ID,FNAME,LNAME,SCORE) values (7,'Ashish','Sharma',76);
+Insert into STUDENT_1 (ID,FNAME,LNAME,SCORE) values (8,'Anurag','Singh',97);
+Insert into STUDENT_1 (ID,FNAME,LNAME,SCORE) values (2,'John','Kelly',88);

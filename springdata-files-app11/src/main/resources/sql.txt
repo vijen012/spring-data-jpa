@@ -1,0 +1,7 @@
+CREATE table "IMAGE" (
+    "ID"         NUMBER NOT NULL,
+    "NAME"       VARCHAR2(100) NOT NULL,
+    "DATA"       BLOB NOT NULL,
+    constraint  "IMAGE_PK" primary key ("ID")
+)
+/

@@ -1,0 +1,55 @@
+For Single Table:- Need Drop Payment table for Table per class
+
+CREATE table "PAYMENT" (
+    "ID"          NUMBER,
+    "PMODE"       VARCHAR2(2),
+    "AMOUNT"      NUMBER(8,3),
+    "CARDNUMBER"  VARCHAR2(20),
+    "CHECKNUMBER" VARCHAR2(20),
+    constraint  "PAYMENT_PK" primary key ("ID")
+)
+
+------------------------------------------------------------------------------------------------------------------
+Table Per Concrete Class Strategy:-
+
+CREATE table "BANKCHECK" (
+    "ID"          NUMBER,
+    "AMOUNT"      NUMBER(8,3),
+    "CHECKNUMBER"  VARCHAR2(20),
+    constraint  "BANKCHECK_PK" primary key ("ID")
+);
+
+CREATE table "CARD" (
+    "ID"          NUMBER,
+    "AMOUNT"      NUMBER(8,3),
+    "CARDNUMBER"  VARCHAR2(20),
+    constraint  "CARD_PK" primary key ("ID")
+)
+
+------------------------------------------------------------------------------------------------------------------
+
+Joined Strategy:-
+
+CREATE table "PAYMENT" (
+    "ID"         NUMBER,
+    "AMOUNT"     NUMBER(8,3),
+    constraint  "PAYMENT_PK" primary key ("ID")
+)
+
+
+CREATE table "CARD" (
+    "ID"         NUMBER,
+    "CARDNUMBER" VARCHAR2(20)
+)
+/
+ALTER TABLE "CARD" ADD CONSTRAINT "CARD_FK" 
+FOREIGN KEY ("ID")
+REFERENCES "PAYMENT" ("ID")
+/
+
+CREATE table "BANKCHECK" (
+    "ID"         NUMBER,
+    "CHECKNUMBER" VARCHAR2(20)
+);
+ALTER TABLE "BANKCHECK" ADD CONSTRAINT "BANKCHECK_FK" FOREIGN KEY ("ID") REFERENCES "PAYMENT" ("ID");
+

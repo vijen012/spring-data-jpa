@@ -1,0 +1,10 @@
+CREATE table "EMPLOYEE" (
+    "ID"         NUMBER,
+    "NAME"       VARCHAR2(20),
+    "STREET"     VARCHAR2(30),
+    "CITY"       VARCHAR2(20),
+    "STATE"      VARCHAR2(20),
+    "ZIPCODE"    VARCHAR2(10),
+    "COUNTRY"    VARCHAR2(20)
+)
+/

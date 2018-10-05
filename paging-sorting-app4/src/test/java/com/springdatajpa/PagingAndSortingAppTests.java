@@ -1,0 +1,217 @@
+package com.springdatajpa;
+
+import static org.junit.Assert.*;
+
+import java.util.Arrays;
+import java.util.List;
+
+import javax.xml.transform.Result;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.test.context.junit4.SpringRunner;
+
+import com.springdatajpa.entities.Customer;
+import com.springdatajpa.entities.Product;
+import com.springdatajpa.repository.CustomerRepository;
+import com.springdatajpa.repository.ProductRepository;
+
+@RunWith(SpringRunner.class)
+@SpringBootTest
+public class PagingAndSortingAppTests {
+
+	private static final double DELTA = 1e-8;
+	
+	@Autowired
+	private ProductRepository productRepository;
+	
+	@Autowired
+	private CustomerRepository customerRepository;
+	
+	@Test
+	public void contextLoads() {
+	}
+	
+	@Test
+	public void testCreateProduct() {
+		Product product = new Product();
+		product.setId(1);
+		product.setName("MacBook Pro");
+		product.setDesc("Awesome");
+		product.setPrice(1500d);
+		productRepository.save(product);
+	}
+	
+	@Test
+	public void testReadProduct() {
+		Product product = productRepository.findOne(1);
+		assertNotNull(product);
+		assertEquals("Actual and Expected Description Value are not equals", "MacBook Pro", product.getName());
+	}
+	
+	@Test
+	public void testUpdateProduct() {
+		Product product = productRepository.findOne(1);
+		product.setPrice(2000d);
+		productRepository.save(product);
+		assertEquals("Actual and Expected price value are not equals", 2000d, productRepository.findOne(1).getPrice(), DELTA);
+	}
+	
+/*	@Test
+	public void testDeleteProduct() {
+		if (productRepository.exists(1)) {
+			productRepository.delete(1);
+			assertNull(productRepository.findOne(1));
+		}
+	}*/
+	
+	@Test
+	public void testCountProduct() {
+		assertTrue(1 == productRepository.count());
+	}
+	
+	@Test
+	public void testFindByName() {
+		List<Product> productList = productRepository.findByName("Galaxy 9");
+		productList.forEach(p -> assertTrue(p.getName().equals("Galaxy 9")));
+	}
+	
+	@Test
+	public void testFindByNameAndDesc() {
+		List<Product> productList = productRepository.findByNameAndDesc("HeadPhone", "From Bose Inc"); 
+		productList.forEach(p -> assertTrue(p.getName().equals("HeadPhone") && p.getDesc().equals("From Bose Inc")));
+	}
+	
+	@Test
+	public void testFindByPriceGreaterThan() {
+		List<Product> productList = productRepository.findByPriceGreaterThan(300d);
+		productList.forEach(p -> assertTrue(p.getPrice() > 300d));
+	}
+	
+	@Test
+	public void testFindByDescContains() {
+		List<Product> productList = productRepository.findByDescContains("Apple");
+		productList.forEach(p -> assertTrue(p.getDesc().contains("Apple")));
+	}
+	
+	@Test
+	public void testFindByPriceBetween() {
+		List<Product> productList = productRepository.findByPriceBetween(300d, 1000d);
+		productList.forEach(p -> assertTrue(p.getPrice() <= 1000d && p.getPrice() >= 300d));
+	}
+	
+	@Test
+	public void testFindByDescLike() {
+		List<Product> productList = productRepository.findByDescLike("%LG%");
+		productList.forEach(p -> assertTrue(p.getDesc().matches(".*LG.*")));
+	}
+	
+/*	@Test
+	public void testFindByIdIn() {
+		List<Product> productList = productRepository.findByIdIn(Arrays.asList(1,2,3));
+		productList.forEach(p -> assertTrue(Arrays.asList(1,2,3).contains(p.getId())));
+	}	*/
+	
+	@Test
+	public void testFindAllPaging() {
+		//first arg - page number which starts from zero , second arg - Number of records per page
+		Pageable pageable = new PageRequest(3, 2);
+		Page<Product> results = productRepository.findAll(pageable);
+		results.forEach(p -> System.out.println(p.getName()));
+		assertTrue(results.getNumberOfElements() > 0 && results.getNumberOfElements() <=2);
+	}
+	
+	@Test
+	public void testFindAllSorting() {
+		//Default direction is : Direction.ASC
+		/*Iterable<Product> findAll = productRepository.findAll(new Sort("name"));
+		findAll.forEach(p -> System.out.println(p.getName()));*/
+		
+		//Sorting using Single Property
+		//productRepository.findAll(new Sort(Direction.DESC, "name")).forEach(p -> System.out.println(p.getName()));
+		
+		//Sorting using multiple Property - first descanding by name then by price
+		//productRepository.findAll(new Sort(Direction.DESC, "name", "price")).forEach(p -> System.out.println(p.getName()));;
+
+		//Sorting using mutliple property and directions
+		productRepository.findAll(new Sort(new Sort.Order(Direction.DESC, "name"), new Sort.Order(Direction.DESC, "price"))).forEach(p -> System.out.println(p.getName()));		
+	}
+	
+	@Test
+	public void testFindAllPagingAndSorting() {
+		/*Pageable pageable = new PageRequest(0, 2, Direction.DESC, "name");
+		productRepository.findAll(pageable).forEach(p -> System.out.println(p.getName()));*/
+		
+		Pageable pageable = new PageRequest(0, 2, new Sort(new Sort.Order(Direction.DESC, "name")));
+		productRepository.findAll(pageable).forEach(p -> System.out.println(p.getName()));
+	}
+	
+		
+	//Enabled Paging and sorting on custome finders method
+	@Test
+	public void testFindByIdIn() {
+		//Pageable pageable = new PageRequest(0, 2, Direction.DESC, "name");
+		Pageable pageable = new PageRequest(0, 3, new Sort(new Sort.Order(Direction.DESC, "name")));
+		List<Product> productList = productRepository.findByIdIn(Arrays.asList(1,2,3,4,5,6), pageable);
+		productList.forEach(p -> System.out.println(p.getName()));
+		productList.forEach(p -> assertTrue(Arrays.asList(1,2,3,4,5,6).contains(p.getId())));
+	}		
+	
+	@Test
+	public void testCreateCustomr() {
+		Customer customer = new Customer();
+		customer.setId(1);
+		customer.setName("Rahul");
+		customer.setEmail("rahul.jain@gmail.com");
+		customerRepository.save(customer);
+	}
+	
+	@Test
+	public void testReadCustomer() {
+		Customer customer = customerRepository.findOne(1);
+		assertNotNull(customer);
+		assertEquals("Actual and Expected email value does not match", "rahul.jain@gmail.com", customer.getEmail());
+	}
+	
+	@Test
+	public void testUpdateCustomer() {
+		Customer customer = customerRepository.findOne(1);
+		customer.setName("Rahul Jain");
+		customerRepository.save(customer);
+		assertEquals("Actual and Expected value of Property Name doesn't match ", "Rahul Jain", customerRepository.findOne(1).getName());
+	}
+	
+/*	@Test
+	public void testDeleteCustomer() {
+		if (customerRepository.exists(1)) {
+			customerRepository.delete(1);
+			assertNull(customerRepository.findOne(1));
+		}
+	}*/
+	
+	@Test
+	public void testCountCustomer() {
+		assertTrue(1 == customerRepository.count());
+	}
+	
+	@Test
+	public void testFindByNameAndEmail() {
+		List<Customer> customerList = customerRepository.findByNameAndEmail("Rahul Jain", "rahul.jain@gmail.com");
+		customerList.forEach(c -> assertTrue(c.getName().equals("Rahul Jain") && c.getEmail().equals("rahul.jain@gmail.com")));
+	}
+	
+	@Test
+	public void testFindByEmailLike() {
+		List<Customer> customerList = customerRepository.findByEmailLike("%.gupta@%");
+		customerList.forEach(c -> assertTrue(c.getEmail().matches(".*\\.gupta@.*")));
+		
+	}
+
+}

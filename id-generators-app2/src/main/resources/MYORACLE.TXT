@@ -1,0 +1,31 @@
+---------------------------------------------------------------------------------------
+CREATE table "EMPLOYEES" (
+    "ID"         NUMBER,
+    "NAME"       VARCHAR2(20),
+    constraint  "EMPLOYEES_PK" primary key ("ID")
+)
+/
+
+CREATE sequence "EMPLOYEES_SEQ" 
+/
+
+CREATE trigger "BI_EMPLOYEES"  
+  before insert on "EMPLOYEES"              
+  for each row 
+begin  
+  if :NEW."ID" is null then
+    select "EMPLOYEES_SEQ".nextval into :NEW."ID" from dual;
+  end if;
+end;
+/   
+
+
+---------------------------------------------------------------------------------------
+
+   CREATE TABLE  "STUDENT" 
+   (    "ID" NUMBER(*,0) NOT NULL ENABLE, 
+    "NAME" VARCHAR2(20), 
+    "EMAIL" VARCHAR2(30), 
+     CONSTRAINT "STUDENT_PK" PRIMARY KEY ("ID") ENABLE
+   ) ;
+
